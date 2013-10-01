@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Cache;
 using System.Text;
@@ -10,7 +11,6 @@ using Inedo.BuildMaster;
 using Inedo.BuildMaster.Extensibility.Providers;
 using Inedo.BuildMaster.Extensibility.Providers.IssueTracking;
 using Inedo.BuildMaster.Web;
-using Inedo.Linq;
 
 namespace Inedo.BuildMasterExtensions.LeanKit.Kanban
 {
@@ -76,7 +76,7 @@ namespace Inedo.BuildMasterExtensions.LeanKit.Kanban
         {
             this.GetCategories();
         }
-        public override string GetIssueUrl(Issue issue)
+        public override string GetIssueUrl(IssueTrackerIssue issue)
         {
             return string.Format(
                 "http://{0}.leankitkanban.com/Boards/View/{1}/{2}",
@@ -85,7 +85,7 @@ namespace Inedo.BuildMasterExtensions.LeanKit.Kanban
                 issue.IssueId
             );
         }
-        public override Issue[] GetIssues(string releaseNumber)
+        public override IssueTrackerIssue[] GetIssues(string releaseNumber)
         {
             if (this.CategoryIdFilter == null || this.CategoryIdFilter.Length == 0)
                 return new KanbanIssue[0];
@@ -138,11 +138,11 @@ namespace Inedo.BuildMasterExtensions.LeanKit.Kanban
 
             return issues.ToArray();
         }
-        public override bool IsIssueClosed(Issue issue)
+        public override bool IsIssueClosed(IssueTrackerIssue issue)
         {
             return ((KanbanIssue)issue).IsClosed;
         }
-        public CategoryBase[] GetCategories()
+        public IssueTrackerCategory[] GetCategories()
         {
             // For some reason boards is wrapped in two arrays
             var boards = (JavaScriptArray)this.GetData<JavaScriptArray>("Boards")[0];

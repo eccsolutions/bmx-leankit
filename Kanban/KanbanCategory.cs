@@ -4,7 +4,7 @@ using Inedo.BuildMaster.Extensibility.Providers.IssueTracking;
 namespace Inedo.BuildMasterExtensions.LeanKit.Kanban
 {
     [Serializable]
-    internal sealed class KanbanCategory : CategoryBase
+    internal sealed class KanbanCategory : IssueTrackerCategory
     {
         public KanbanCategory(int id, string name)
             : base(id.ToString(), name, null)
