@@ -113,7 +113,10 @@ namespace Inedo.BuildMasterExtensions.LeanKit.Kanban
                 {
                     object tagsField;
                     card.TryGetValue("Tags", out tagsField);
-                    var tags = (tagsField ?? string.Empty).ToString().Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+                    var tags = (tagsField ?? string.Empty).ToString()
+                        .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(t => t.Trim())
+                        .ToList();
 
                     if (tags.Contains(releaseTag, StringComparer.OrdinalIgnoreCase))
                     {
