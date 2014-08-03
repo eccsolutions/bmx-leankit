@@ -11,6 +11,7 @@ using Inedo.BuildMaster;
 using Inedo.BuildMaster.Extensibility.Providers;
 using Inedo.BuildMaster.Extensibility.Providers.IssueTracking;
 using Inedo.BuildMaster.Web;
+using Inedo.Web.Controls;
 
 namespace Inedo.BuildMasterExtensions.LeanKit.Kanban
 {
@@ -106,7 +107,8 @@ namespace Inedo.BuildMasterExtensions.LeanKit.Kanban
             foreach (JavaScriptObject lane in lanes)
             {
                 int laneId = Convert.ToInt32(lane["Id"]);
-                var status = (string)lane["Title"];
+                //var status = (string)lane["Title"];
+                var status = string.Format("{0}:{1}", lane["Id"], lane["Title"]);
 
                 var cards = (JavaScriptArray)lane["Cards"];
                 foreach (JavaScriptObject card in cards)
@@ -174,14 +176,23 @@ namespace Inedo.BuildMasterExtensions.LeanKit.Kanban
             var board = (JavaScriptObject)this.GetData<JavaScriptArray>("Boards/" + this.CategoryIdFilter[0])[0];
             var lanes = (JavaScriptArray)board["Lanes"];
 
-            int? laneId = lanes
-                .Cast<JavaScriptObject>()
-                .Where(l => l["Title"].ToString().Equals(newStatus, StringComparison.OrdinalIgnoreCase))
-                .Select(l => (int?)Convert.ToInt32(l["Id"]))
-                .FirstOrDefault();
-
-            if (laneId == null)
+            int laneId = 0;
+            try
+            {
+                laneId = int.Parse(newStatus.Split(':')[0]);
+            }
+            catch (Exception ex)
+            {
                 throw new ArgumentException("Lane " + newStatus + " is not valid.");
+            }
+            //int? laneId = lanes
+            //    .Cast<JavaScriptObject>()
+            //    .Where(l => l["Title"].ToString().Equals(newStatus, StringComparison.OrdinalIgnoreCase))
+            //    .Select(l => (int?)Convert.ToInt32(l["Id"]))
+            //    .FirstOrDefault();
+
+            //if (laneId == null)
+            //    throw new ArgumentException("Lane " + newStatus + " is not valid.");
 
             int id = int.Parse(issueId);
 
@@ -193,7 +204,7 @@ namespace Inedo.BuildMasterExtensions.LeanKit.Kanban
             if (card == null)
                 throw new ArgumentException("Card " + issueId + " was not found.");
 
-            card["LaneId"] = (int)laneId;
+            card["LaneId"] = laneId;
 
             this.PostData<JavaScriptObject>("Board/" + this.CategoryIdFilter[0] + "/UpdateCard", card);
         }

@@ -35,7 +35,7 @@ namespace Inedo.BuildMasterExtensions.LeanKit.Kanban
                 ReleaseNumberTagFormat = this.txtReleaseFormat.Text,
                 AccountName = this.txtAccount.Text,
                 UserName = this.txtUserName.Text,
-                Password = this.txtPassword.Text
+                Password = this.txtPassword.Text,
             };
         }
 
@@ -65,6 +65,7 @@ namespace Inedo.BuildMasterExtensions.LeanKit.Kanban
                 Width = 270,
                 Required = true
             };
+
 
             this.Controls.Add(
                 new FormFieldGroup(
